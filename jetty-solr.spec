@@ -18,7 +18,7 @@ Requires(post):		chkconfig
 Requires(preun):	chkconfig
 Requires(preun):	initscripts
 Requires(postun):	initscripts
-Requires:		java => 1:1.7.0
+Requires:		java7 => 1:1.7.0
 
 %description
 %{summary}
