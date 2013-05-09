@@ -1,0 +1,11 @@
+--- bin/jetty.sh.dist	2013-05-09 18:18:23.895998783 -0400
++++ bin/jetty.sh	2013-05-09 17:24:32.277999617 -0400
+@@ -137,7 +137,7 @@
+ ##################################################
+ # Read any configuration files
+ ##################################################
+-for CONFIG in /etc/default/jetty{,8} $HOME/.jettyrc; do
++for CONFIG in /etc/default/jetty-solr; do
+   if [ -f "$CONFIG" ] ; then 
+     readConfig "$CONFIG"
+   fi

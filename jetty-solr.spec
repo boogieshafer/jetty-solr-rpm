@@ -6,7 +6,7 @@
 
 Name:			jetty-solr
 Version:		%{sver}
-Release:		2%{?dist}
+Release:		3%{?dist}
 Summary:		Solr
 License:		GPL
 URL:			http://lucene.apache.org/solr/
@@ -26,6 +26,7 @@ Patch1:			solr.xml-add_lib_dir.patch
 Patch2:			jetty-requestlog.xml-configure_logback.patch
 Patch3:			jetty-jmx.xml-enable_rmi_tcp1099.patch
 Patch4:			jetty.sh-redirect_init_output.patch
+Patch5:			jetty.sh-config-init.patch
 BuildRoot:		%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 Requires(pre):		shadow-utils
 Requires(post):		chkconfig
@@ -45,6 +46,7 @@ Requires:		mailx
 %patch2 -p0
 %patch3 -p0
 %patch4 -p0
+%patch5 -p0
 %setup -q -D -T -b 2 -n slf4j-%{slfver}
 %setup -q -D -T -b 3 -n logback-%{lver}
 
@@ -78,7 +80,7 @@ mv "%{buildroot}%{_prefix}/jetty-solr/solr/collection1" "%{buildroot}%{_prefix}/
 %__install -d "%{buildroot}"/etc/default
 %__install -d "%{buildroot}"/etc/init.d
 %__install -d "%{buildroot}%{_logprefix}"
-%__install -D -m0644  "%{SOURCE4}" %{buildroot}/etc/default/jetty
+%__install -D -m0644  "%{SOURCE4}" %{buildroot}/etc/default/jetty-solr
 %__install -D -m0644  "%{SOURCE5}" %{buildroot}%{_prefix}/jetty-solr/resources/logback.xml
 %__install -D -m0644  "%{SOURCE6}" %{buildroot}%{_prefix}/jetty-solr/resources/logback-access.xml
 %__install -D -m0600  "%{SOURCE7}" %{buildroot}%{_prefix}/jetty-solr/resources/jmx.passwd
@@ -88,9 +90,9 @@ mv "%{buildroot}%{_prefix}/jetty-solr/solr/collection1" "%{buildroot}%{_prefix}/
 %__install -D -m0755  $RPM_BUILD_DIR/jetty-distribution-%{jver}/bin/jetty.sh %{buildroot}/etc/init.d/jetty-solr
 %__install -D -m0644  $RPM_BUILD_DIR/jetty-distribution-%{jver}/etc/jetty-requestlog.xml %{buildroot}%{_prefix}/jetty-solr/etc/jetty-requestlog.xml
 %__install -D -m0644  $RPM_BUILD_DIR/jetty-distribution-%{jver}/etc/jetty-jmx.xml %{buildroot}%{_prefix}/jetty-solr/etc/jetty-jmx.xml
-sed -i "s|JETTY_HOME_REPLACE|%{_prefix}|g" "%{buildroot}/etc/default/jetty"
-sed -i "s|JETTY_LOGS_REPLACE|%{_logprefix}|g" "%{buildroot}/etc/default/jetty"
-sed -i "s|JAVA_HOME_REPLACE|%{_javaprefix}|g" "%{buildroot}/etc/default/jetty"
+sed -i "s|JETTY_HOME_REPLACE|%{_prefix}|g" "%{buildroot}/etc/default/jetty-solr"
+sed -i "s|JETTY_LOGS_REPLACE|%{_logprefix}|g" "%{buildroot}/etc/default/jetty-solr"
+sed -i "s|JAVA_HOME_REPLACE|%{_javaprefix}|g" "%{buildroot}/etc/default/jetty-solr"
 sed -i "s|./logs|%{_logprefix}|g" "%{buildroot}%{_prefix}/jetty-solr/etc/jetty-requestlog.xml"
 sed -i "s|./logs|%{_logprefix}|g" "%{buildroot}%{_prefix}/jetty-solr/resources/logback.xml"
 sed -i "s|./logs|%{_logprefix}|g" "%{buildroot}%{_prefix}/jetty-solr/resources/logback-access.xml"
@@ -102,7 +104,7 @@ rm "%{buildroot}%{_prefix}/jetty-solr/resources/log4j.properties"
 %if "%{_collection_name}" == "collection1"
 # no need to rename
 %else
-sed -i "s|collection1|%{_collection_name}|g" "%{buildroot}/etc/default/jetty"
+sed -i "s|collection1|%{_collection_name}|g" "%{buildroot}/etc/default/jetty-solr"
 sed -i "s|collection1|%{_collection_name}|g" "%{buildroot}%{_prefix}/jetty-solr/solr/solr.xml"
 %endif
 
@@ -127,7 +129,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/README.txt
 %{_prefix}/SYSTEM_REQUIREMENTS.txt
 %attr(0755,root,root) /etc/init.d/jetty-solr
-%attr(0644,root,root) /etc/default/jetty
+%attr(0644,root,root) /etc/default/jetty-solr
 
 %pre
 getent group solr >/dev/null || groupadd -r solr
@@ -152,6 +154,9 @@ if [ "$1" -ge "1" ] ; then
 fi
 
 %changelog
+* Thu May 9 2013 Scott Rossillo <scott@rossillo.net>
+- Renamed /etc/default/jetty to /etc/default/jetty-solr
+
 * Wed May 8 2013 Boogie Shafer <boogieshafer@yahoo.com>
 - v4.3.0-2 tag
 - remove solr bundled log4j 1.2.16 and slf4j 1.6.6 jars, replace with logback 1.0.12 and slf4j 1.7.5 jars
