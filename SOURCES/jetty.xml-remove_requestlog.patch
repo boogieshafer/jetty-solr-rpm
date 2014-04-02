@@ -1,15 +1,6 @@
---- example/etc/jetty.xml.dist	2013-11-15 11:45:20.689900000 -0800
-+++ example/etc/jetty.xml	2013-11-15 11:45:54.648612000 -0800
-@@ -51,7 +51,7 @@
-     <Call name="addConnector">
-       <Arg>
-           <New class="org.eclipse.jetty.server.bio.SocketConnector">
--            <Call class="java.lang.System" name="setProperty"> <Arg>log4j.configuration</Arg> <Arg>etc/log4j.properties</Arg> </Call>
-+            <Call class="java.lang.System" name="setProperty"> <Arg>log4j.configuration</Arg> <Arg>resources/log4j.xml</Arg> </Call>
-             <Set name="host"><SystemProperty name="jetty.host" /></Set>
-             <Set name="port"><SystemProperty name="jetty.port" default="8983"/></Set>
-             <Set name="maxIdleTime">50000</Set>
-@@ -111,40 +111,11 @@
+--- example/etc/jetty.xml.dist	2014-04-02 08:37:49.464206000 -0700
++++ example/etc/jetty.xml	2014-04-02 08:42:03.989720000 -0700
+@@ -110,40 +110,11 @@
             <Item>
               <New id="DefaultHandler" class="org.eclipse.jetty.server.handler.DefaultHandler"/>
             </Item>
