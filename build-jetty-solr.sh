@@ -1,5 +1,5 @@
 #!/bin/sh
-solrversion="4.5.1"
+solrversion="4.7.1"
 jettyversion="8.1.10.v20130312"
 log4jextrasversion="1.1"
 
@@ -8,8 +8,8 @@ mkdir -p BUILD BUILDROOT RPMS SRPMS
 
 if [ ! -f SOURCES/solr-$solrversion.tgz ];
 then
-    wget "http://www.us.apache.org/dist/lucene/solr/$solrversion/solr-$solrversion.tgz" -O SOURCES/solr-$solrversion.tgz
-    wget "http://www.us.apache.org/dist/lucene/solr/$solrversion/solr-$solrversion.tgz.md5" -O SOURCES/solr-$solrversion.tgz.md5
+    wget "http://archive.apache.org/dist/lucene/solr/$solrversion/solr-$solrversion.tgz" -O SOURCES/solr-$solrversion.tgz
+    wget "http://archive.apache.org/dist/lucene/solr/$solrversion/solr-$solrversion.tgz.md5" -O SOURCES/solr-$solrversion.tgz.md5
 fi
 
 if [ ! -f SOURCES/jetty-distribution-$jettyversion.tar.gz ];
