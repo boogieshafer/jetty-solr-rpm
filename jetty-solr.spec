@@ -5,16 +5,17 @@
 %define _core02_name core02
 %define _core02_enabled false
 %define _notify_email youremail@yourdomain.com
+# Prevent brp-java-repack-jars from being run.
+%define __jar_repack %{nil}
 
 Name:			jetty-solr
 Version:		%{sver}
-Release:		4%{?dist}
+Release:		1%{?dist}
 Summary:		Solr
 License:		GPL
 URL:			http://lucene.apache.org/solr/
 Source:			http://www.us.apache.org/dist/lucene/solr/%{version}/solr-%{version}.tgz
 Source1:                http://download.eclipse.org/jetty/%{jver}/dist/jetty-distribution-%{jver}.tar.gz
-#Source2:		http://www.us.apache.org/dist/logging/log4j/extras/%{l4xver}/apache-log4j-extras-${l4xver}-bin.tar.gz
 Source2:		http://archive.apache.org/dist/logging/log4j/companions/extras/%{l4xver}/apache-log4j-extras-%{l4xver}.tar.gz
 Source3:		etc.default.jetty-solr
 Source4:		jmx.passwd
@@ -46,9 +47,8 @@ rm -r example/example-DIH
 rm -r example/exampledocs
 rm -r example/example-schemaless
 rm -r example/multicore
-rm example/etc/logging.properties
 rm example/resources/log4j.properties
-rm example/cloud-scripts/zkcli.bat
+rm example/scripts/cloud-scripts/zkcli.bat
 rm dist/solr-%{version}.war
 mkdir -p example/solr/%{_core02_name}
 cp -R example/solr/collection1/conf example/solr/%{_core02_name}/conf
@@ -126,20 +126,23 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,solr,solr,-)
 %attr(0755,solr,solr) %dir %{_prefix}
+%if "%{_logprefix}" == "%{_prefix}/jetty-solr/logs"
+# do nothing
+%else
 %attr(0755,solr,solr) %dir %{_logprefix}
-%doc
+%endif
 %{_prefix}/contrib
 %{_prefix}/dist
-%{_prefix}/docs
+%doc %{_prefix}/docs
 %{_prefix}/jetty-solr
-%{_prefix}/licenses
-%{_prefix}/CHANGES.txt
-%{_prefix}/LICENSE.txt
-%{_prefix}/NOTICE.txt
-%{_prefix}/README.txt
-%{_prefix}/SYSTEM_REQUIREMENTS.txt
+%doc %{_prefix}/licenses
+%doc %{_prefix}/CHANGES.txt
+%doc %{_prefix}/LICENSE.txt
+%doc %{_prefix}/NOTICE.txt
+%doc %{_prefix}/README.txt
+%doc %{_prefix}/SYSTEM_REQUIREMENTS.txt
 %attr(0755,root,root) /etc/init.d/jetty-solr
-%attr(0644,root,root) /etc/default/jetty-solr
+%config %attr(0644,root,root) /etc/default/jetty-solr
 
 %pre
 getent group solr >/dev/null || groupadd -r solr
@@ -164,6 +167,11 @@ if [ "$1" -ge "1" ] ; then
 fi
 
 %changelog
+
+* Wed Apr 02 2014 Boogie Shafer <boogieshafer@yahoo.com>
+- 4.7.1-1
+- update for solr 4.7.x
+- disable jar repack during rpmbuild process
 
 * Fri Nov 15 2013 Boogie Shafer <boogieshafer@yahoo.com>
 - 4.5.1-4
