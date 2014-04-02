@@ -10,33 +10,32 @@ JETTY_ARGS="OPTIONS=Server,jmx,ext,resources etc/jetty-jmx.xml etc/jetty.xml etc
 JAVA_HOME=JAVA_HOME_REPLACE/java
 JAVA_OPTIONS="-Dsolr.solr.home=$JETTY_HOME/solr $JAVA_OPTIONS"
 
+# configure GC type
+JAVA_OPTIONS="-XX:+UseG1GC $JAVA_OPTIONS"
+
 # set Xmx between 25-50% of total physical RAM as a starting point
-JAVA_OPTIONS="-Xms768m -Xmx1024m $JAVA_OPTIONS"
-
-# set size of Perm Gen
+# set Xms to half of Xmx as a starting point
+# you want to leave RAM available outside of JVM for the OS to cache the solr indexes into
+JAVA_OPTIONS="-Xms768m -Xmx1024m -Xss256k $JAVA_OPTIONS"
 JAVA_OPTIONS="-XX:PermSize=64m -XX:MaxPermSize=128m $JAVA_OPTIONS"
+JAVA_OPTIONS="-XX:+UseAdaptiveSizePolicy -XX:MaxGCPauseMillis=1000 -XX:GCTimeRatio=19 $JAVA_OPTIONS"
 
-# use one of these to set the sixe of new generation to 40-50% of total heap
-#JAVA_OPTIONS="-XX:NewSize=384m -XX:MaxNewSize=512m -XX:SurvivorRatio=8 $JAVA_OPTIONS"
-JAVA_OPTIONS="-XX:NewRatio=1 -XX:SurvivorRatio=8 $JAVA_OPTIONS"
-
-JAVA_OPTIONS="-XX:MaxTenuringThreshold=8 $JAVA_OPTIONS"
-#JAVA_OPTIONS="-XX:TargetSurvivorRatio=50 $JAVA_OPTIONS"
-
+# configure jvm options
 JAVA_OPTIONS="-XX:+DisableExplicitGC $JAVA_OPTIONS"
-
-# use CMS GC
-JAVA_OPTIONS="-XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:-UseAdaptiveSizePolicy -XX:CMSInitiatingOccupancyFraction=75 -XX:+UseCMSInitiatingOccupancyOnly -XX:+UseCMSCompactAtFullCollection -XX:CMSFullGCsBeforeCompaction=1 -XX:+CMSParallelRemarkEnabled -XX:+CMSScavengeBeforeRemark $JAVA_OPTIONS"
-
-# UseLargePages requires Huge Pages configured in kernel
-JAVA_OPTIONS="-XX:+UseLargePages $JAVA_OPTIONS"
-
 JAVA_OPTIONS="-XX:+AggressiveOpts $JAVA_OPTIONS"
+# enable threading with workaround for non-root service
+JAVA_OPTIONS="-XX:+UseThreadPriorities -XX:ThreadPriorityPolicy=42 $JAVA_OPTIONS"
+# UseLargePages requires configuring HugePages at the kernel level
+#JAVA_OPTIONS="-XX:+UseLargePages $JAVA_OPTIONS"
 
-JAVA_OPTIONS="-Xloggc:$JETTY_LOGS/gc.log -verbose:gc -XX:+PrintGCDateStamps -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintCommandLineFlags -XX:+PrintHeapAtGC -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime $JAVA_OPTIONS"
-JAVA_OPTIONS="-XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=10m $JAVA_OPTIONS"
-JAVA_OPTIONS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp/jetty-solr-dump.hprof $JAVA_OPTIONS"
-JAVA_OPTIONS="-XX:OnError=$JETTY_HOME/etc/java_error.sh -XX:OnOutOfMemoryError=$JETTY_HOME/etc/java_oom.sh $JAVA_OPTIONS"
+# configure GC logging
+JAVA_OPTIONS="-Xloggc:$JETTY_LOGS/gc.log -verbose:gc -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintClassHistogram -XX:+PrintHeapAtGC -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:+PrintPromotionFailure -XX:+PrintAdaptiveSizePolicy -XX:+PrintTLAB -XX:PrintFLSStatistics=1 -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=10m $JAVA_OPTIONS"
+
+# configure behavior on error
+JAVA_OPTIONS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp/jetty-solr-dump.hprof -XX:OnError=$JETTY_HOME/etc/java_error.sh -XX:OnOutOfMemoryError=$JETTY_HOME/etc/java_oom.sh -XX:ErrorFile=/tmp/java_error%p.log $JAVA_OPTIONS"
+
+# configure location for java preferences to be stored
+JAVA_OPTIONS="-Djava.util.prefs.systemRoot=$JETTY_HOME/.java -Djava.util.prefs.userRoot=$JETTY_HOME/.java $JAVA_OPTIONS"
 
 # other solr GC tuning suggestions
 # ref: https://wiki.apache.org/solr/ShawnHeisey#GC_Tuning
