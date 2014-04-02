@@ -31,6 +31,11 @@ JAVA_OPTIONS="-XX:+UseThreadPriorities -XX:ThreadPriorityPolicy=42 $JAVA_OPTIONS
 # configure GC logging
 JAVA_OPTIONS="-Xloggc:$JETTY_LOGS/gc.log -verbose:gc -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+PrintGCDetails -XX:+PrintTenuringDistribution -XX:+PrintClassHistogram -XX:+PrintHeapAtGC -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:+PrintPromotionFailure -XX:+PrintAdaptiveSizePolicy -XX:+PrintTLAB -XX:PrintFLSStatistics=1 -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=10m $JAVA_OPTIONS"
 
+# enable sflow JVM agent to report performance stats
+# requires hsflowd agent installed and configured http://host-sflow.sourceforge.net
+# requires sflowagent.jar installed http://code.google.com/p/jmx-sflow-agent/
+#JAVA_OPTIONS="-javaagent:$JETTY_HOME/lib/sflowagent.jar -Dsflow.hostname=jetty-solr -Dsflow.dsindex=8983 $JAVA_OPTIONS"
+
 # configure behavior on error
 JAVA_OPTIONS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp/jetty-solr-dump.hprof -XX:OnError=$JETTY_HOME/etc/java_error.sh -XX:OnOutOfMemoryError=$JETTY_HOME/etc/java_oom.sh -XX:ErrorFile=/tmp/java_error%p.log $JAVA_OPTIONS"
 
