@@ -32,6 +32,16 @@
         </layout>
     </appender>
  
+    <appender name="HADOOP_LOG_FILE" class="org.apache.log4j.rolling.RollingFileAppender">
+        <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+                <param name="FileNamePattern" value="/var/log/solr/hadoop.%d{yyyy-MM-dd}.gz" />
+                <param name="ActiveFileName" value="/var/log/solr/hadoop.log" />
+        </rollingPolicy>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ z} [%t] %-5p %C{36} - %m%n" />
+        </layout>
+    </appender>
+ 
     <appender name="SOLR_LOG_FILE" class="org.apache.log4j.rolling.RollingFileAppender">
         <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
                 <param name="FileNamePattern" value="/var/log/solr/solr.%d{yyyy-MM-dd}.gz" />
@@ -54,6 +64,11 @@
     <logger name="org.apache.zookeeper" additivity="false">
 	<level value="INFO" />
         <appender-ref ref="ZK_LOG_FILE"/>
+    </logger>
+
+    <logger name="org.apache.hadoop" additivity="false">
+	<level value="INFO" />
+        <appender-ref ref="HADOOP_LOG_FILE"/>
     </logger>
 <!-- end logger section --> 
 
