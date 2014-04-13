@@ -2,7 +2,8 @@ RPM build for Solr using builtin Jetty
 
 solr version 4.7.1
 jetty version 8.1.10.v20130312 (to match what is bundled with solr)
-log4j extras version 1.1 (to provide better log rotation)
+slf4j 1.7.7 (replacing 1.6.6 that ships with solr)
+logback 1.1.2 (replacing log4j 1.2.16 that ships with solr)
 
 
 goal is a serviceable base rpm for deployment of solr on jetty
@@ -32,14 +33,11 @@ RPM install will create a solr user and group to run the service
 JVM options are easily configured in /etc/default/jetty-solr
   -you will probably want to configure Xms and Xmx for your hardware
 
-Logging is now handled by log4j framework
-  I prefer logback, and this script used to bundle it, but the admin UI in SOLR doesnt yet work correctly with logback
+Logging is handled by logback framework
+  I prefer logback, but the admin UI in SOLR doesnt yet work correctly with logback
   -logging for jetty, solr, and the local zookeeper services is using similar configuration settings (rotation, formatting, etc)
   -RFC3339 datetime format + local TZ label for service log events
   -combined format for jetty HTTP request logs
-  -log4j extras library is installed to handle log rotation with compression
-  -using version 1.1 of log4j extras as solr 4.7.1 is bundled with log4j 1.2.16
-  -the SOLR admin UI seems to require SOLR related events sent to root logger
   -GC logging is enabled by default, not handled by log4j, it is rotated by JVM
   -the jetty start log is not handled by log4j, not rotated
 
