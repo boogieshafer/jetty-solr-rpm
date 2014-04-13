@@ -10,19 +10,21 @@
 
 Name:			jetty-solr
 Version:		%{sver}
-Release:		1%{?dist}
+Release:		1log4j%{?dist}
 Summary:		Solr
 License:		GPL
 URL:			http://lucene.apache.org/solr/
 Source:			http://www.us.apache.org/dist/lucene/solr/%{version}/solr-%{version}.tgz
 Source1:                http://download.eclipse.org/jetty/%{jver}/dist/jetty-distribution-%{jver}.tar.gz
-Source2:		http://archive.apache.org/dist/logging/log4j/companions/extras/%{l4xver}/apache-log4j-extras-%{l4xver}.tar.gz
-Source3:		etc.default.jetty-solr
-Source4:		jmx.passwd
-Source5:		jmx.access
-Source6:		java_error.sh
-Source7:		java_oom.sh
-Source8:		log4j.xml
+Source2:		slf4j-%{slfver}.tar.gz
+Source3:		log4j-%{lver}.tar.gz
+Source4:		apache-log4j-extras-%{l4xver}-bin.tar.gz
+Source5:		etc.default.jetty-solr
+Source6:		jmx.passwd
+Source7:		jmx.access
+Source8:		java_error.sh
+Source9:		java_oom.sh
+Source10:		log4j.xml
 Patch0:			jetty.xml-remove_requestlog.patch
 Patch1:			jetty-requestlog.xml-configure_filenaming.patch
 Patch2:			jetty-jmx.xml-enable_rmi_tcp1099.patch
@@ -47,6 +49,7 @@ rm -r example/example-DIH
 rm -r example/exampledocs
 rm -r example/example-schemaless
 rm -r example/multicore
+rm example/lib/ext/*.jar
 rm example/resources/log4j.properties
 rm example/scripts/cloud-scripts/zkcli.bat
 rm dist/solr-%{version}.war
@@ -71,7 +74,12 @@ mv example/solr/%{_core02_name}/core.properties.unloaded example/solr/%{_core02_
 %patch3 -p0
 %patch4 -p0
 
-%setup -q -D -T -b 2 -n apache-log4j-extras-%{l4xver}
+%setup -q -D -T -b 2 -n slf4j-%{slfver}
+
+%setup -q -D -T -b 3 -n apache-log4j-%{lver}
+
+%setup -q -D -T -b 4 -n apache-log4j-extras-%{l4xver}
+
 %build
 
 %install
@@ -84,6 +92,11 @@ cp -pr $RPM_BUILD_DIR/solr-%{version}/docs "%{buildroot}%{_prefix}"
 cp -pr $RPM_BUILD_DIR/solr-%{version}/licenses "%{buildroot}%{_prefix}"
 %__install -d "%{buildroot}%{_prefix}/jetty-solr"
 cp -pr $RPM_BUILD_DIR/solr-%{version}/example/* "%{buildroot}%{_prefix}/jetty-solr"
+cp -p $RPM_BUILD_DIR/slf4j-%{slfver}/slf4j-api-%{slfver}.jar "%{buildroot}%{_prefix}/jetty-solr/lib/ext"
+cp -p $RPM_BUILD_DIR/slf4j-%{slfver}/jcl-over-slf4j-%{slfver}.jar "%{buildroot}%{_prefix}/jetty-solr/lib/ext"
+cp -p $RPM_BUILD_DIR/slf4j-%{slfver}/jul-to-slf4j-%{slfver}.jar "%{buildroot}%{_prefix}/jetty-solr/lib/ext"
+cp -p $RPM_BUILD_DIR/slf4j-%{slfver}/slf4j-log4j12-%{slfver}.jar "%{buildroot}%{_prefix}/jetty-solr/lib/ext"
+cp -p $RPM_BUILD_DIR/apache-log4j-%{lver}/log4j-%{lver}.jar "%{buildroot}%{_prefix}/jetty-solr/lib/ext"
 cp -p $RPM_BUILD_DIR/apache-log4j-extras-%{l4xver}/apache-log4j-extras-%{l4xver}.jar "%{buildroot}%{_prefix}/jetty-solr/lib/ext"
 %if "%{_collection_name}" == "collection1"
 # no need to rename
@@ -95,12 +108,12 @@ mv "%{buildroot}%{_prefix}/jetty-solr/solr/collection1" "%{buildroot}%{_prefix}/
 %__install -d "%{buildroot}"/etc/default
 %__install -d "%{buildroot}"/etc/init.d
 %__install -d "%{buildroot}%{_logprefix}"
-%__install -D -m0644  "%{SOURCE3}" %{buildroot}/etc/default/jetty-solr
-%__install -D -m0600  "%{SOURCE4}" %{buildroot}%{_prefix}/jetty-solr/resources/jmx.passwd
-%__install -D -m0644  "%{SOURCE5}" %{buildroot}%{_prefix}/jetty-solr/resources/jmx.access
-%__install -D -m0755  "%{SOURCE6}" %{buildroot}%{_prefix}/jetty-solr/etc/java_error.sh
-%__install -D -m0755  "%{SOURCE7}" %{buildroot}%{_prefix}/jetty-solr/etc/java_oom.sh
-%__install -D -m0644  "%{SOURCE8}" %{buildroot}%{_prefix}/jetty-solr/resources/log4j.xml
+%__install -D -m0644  "%{SOURCE5}" %{buildroot}/etc/default/jetty-solr
+%__install -D -m0600  "%{SOURCE6}" %{buildroot}%{_prefix}/jetty-solr/resources/jmx.passwd
+%__install -D -m0644  "%{SOURCE7}" %{buildroot}%{_prefix}/jetty-solr/resources/jmx.access
+%__install -D -m0755  "%{SOURCE8}" %{buildroot}%{_prefix}/jetty-solr/etc/java_error.sh
+%__install -D -m0755  "%{SOURCE9}" %{buildroot}%{_prefix}/jetty-solr/etc/java_oom.sh
+%__install -D -m0644  "%{SOURCE10}" %{buildroot}%{_prefix}/jetty-solr/resources/log4j.xml
 %__install -D -m0755  $RPM_BUILD_DIR/jetty-distribution-%{jver}/bin/jetty.sh %{buildroot}/etc/init.d/jetty-solr
 %__install -D -m0644  $RPM_BUILD_DIR/jetty-distribution-%{jver}/etc/jetty-requestlog.xml %{buildroot}%{_prefix}/jetty-solr/etc/jetty-requestlog.xml
 %__install -D -m0644  $RPM_BUILD_DIR/jetty-distribution-%{jver}/etc/jetty-jmx.xml %{buildroot}%{_prefix}/jetty-solr/etc/jetty-jmx.xml
@@ -119,7 +132,7 @@ sed -i "s|collection1|%{_collection_name}|g" "%{buildroot}%{_prefix}/jetty-solr/
 %endif
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+# rm -rf $RPM_BUILD_ROOT
 
 
 
@@ -167,6 +180,10 @@ if [ "$1" -ge "1" ] ; then
 fi
 
 %changelog
+
+* Sat Apr 13 2014 Boogie Shafer <boogieshafer@yahoo.com>
+- 4.7.1-1log4j
+- remove the dist slf4j and log4j and upgrade to current releases
 
 * Wed Apr 02 2014 Boogie Shafer <boogieshafer@yahoo.com>
 - 4.7.1-1
