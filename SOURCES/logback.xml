@@ -5,7 +5,7 @@
 http://logback.qos.ch/manual/configuration.html
  
   -->
-<configuration scan="true" scanPeriod="60 seconds">
+<configuration debug="true" scan="true" scanPeriod="60 seconds">
     <contextName>jetty-solr</contextName>
     
 <!-- uncomment to JMX enable logback, see http://logback.qos.ch/manual/jmxConfig.html
@@ -60,6 +60,26 @@ http://logback.qos.ch/manual/configuration.html
         </encoder>
     </appender>
  
+    <appender name="HADOOP_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./logs/hadoop.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>./logs/hadoop.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 100MB -->
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+ 
+            <!-- keep 10 files worth of history -->
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+        <Append>true</Append>
+        <encoder>
+            <pattern>%date{"yyyy-MM-dd'T'HH:mm:ss.SSSZ z"} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+ 
     <appender name="SOLR_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>./logs/solr.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -90,6 +110,10 @@ http://logback.qos.ch/manual/configuration.html
  
     <logger name="org.apache.zookeeper" level="INFO" additivity="false">
         <appender-ref ref="ZK_LOG_FILE"/>
+    </logger>
+
+    <logger name="org.apache.hadoop" level="INFO" additivity="false">
+        <appender-ref ref="HADOOP_LOG_FILE"/>
     </logger>
 <!-- end logger section --> 
 

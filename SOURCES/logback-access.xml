@@ -23,7 +23,8 @@ http://logback.qos.ch/manual/configuration.html
         </rollingPolicy>
  
         <encoder>
-            <pattern>combined</pattern>
+            <!-- combined format plus elapsed time in ms -->
+            <pattern>%h %l %u [%t] "%r" %s %b "%i{Referer}" "%i{User-Agent}" %D</pattern>
         </encoder>
     </appender>
  

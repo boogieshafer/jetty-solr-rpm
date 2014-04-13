@@ -1,7 +1,8 @@
 #!/bin/sh
 solrversion="4.7.1"
 jettyversion="8.1.10.v20130312"
-log4jextrasversion="1.1"
+slf4jversion="1.7.7"
+logbackversion="1.1.2"
 
 echo "Cleaning up....."
 rm -rf BUILD BUILDROOT tmp || true
@@ -22,15 +23,17 @@ then
     wget "http://archive.eclipse.org/jetty/$jettyversion/dist/jetty-distribution-$jettyversion.tar.gz.md5" -O SOURCES/jetty-distribution-$jettyversion.tar.gz.md5
 fi
 
-if [ ! -f SOURCES/apache-log4j-extras-$log4jextrasversion.tar.gz ];
+if [ ! -f SOURCES/slf4j-$slf4jversion.tar.gz ];
 then
-    wget "http://archive.apache.org/dist/logging/log4j/companions/extras/$log4jextrasversion/apache-log4j-extras-$log4jextrasversion.tar.gz" -O SOURCES/apache-log4j-extras-$log4jextrasversion.tar.gz
-#    wget "http://www.us.apache.org/dist/logging/log4j/extras/$log4jextrasversion/apache-log4j-extras-$log4jextrasversion-bin.tar.gz" -O SOURCES/apache-log4j-extras-$log4jextrasversion-bin.tar.gz
-    wget "http://archive.apache.org/dist/logging/log4j/companions/extras/$log4jextrasversion/apache-log4j-extras-$log4jextrasversion.tar.gz.md5" -O SOURCES/apache-log4j-extras-$log4jextrasversion.tar.gz.md5
-#    wget "http://www.us.apache.org/dist/logging/log4j/extras/$log4jextrasversion/apache-log4j-extras-$log4jextrasversion-bin.tar.gz.md5" -O SOURCES/apache-log4j-extras-$log4jextrasversion-bin.tar.gz.md5
+    wget "http://www.slf4j.org/dist/slf4j-$slf4jversion.tar.gz" -O SOURCES/slf4j-$slf4jversion.tar.gz
+fi
+
+if [ ! -f SOURCES/logback-$logbackversion.tar.gz ];
+then
+    wget "http://logback.qos.ch/dist/logback-$logbackversion.tar.gz" -O SOURCES/logback-$logbackversion.tar.gz
 fi
 
 echo "Assembling RPM....."
-rpmbuild -ba --target=noarch --define="_topdir $PWD" --define="_tmppath $PWD/tmp" --define="sver $solrversion" --define="jver $jettyversion" --define="l4xver $log4jextrasversion" jetty-solr.spec
+rpmbuild -ba --target=noarch --define="_topdir $PWD" --define="_tmppath $PWD/tmp" --define="sver $solrversion" --define="jver $jettyversion" --define="slfver $slf4jversion" --define="lver $logbackversion" jetty-solr.spec
 
 echo "DONE"
