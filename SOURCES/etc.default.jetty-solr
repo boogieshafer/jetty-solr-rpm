@@ -16,7 +16,7 @@ JAVA_OPTIONS="-XX:+UseG1GC $JAVA_OPTIONS"
 # set Xmx between 25-50% of total physical RAM as a starting point
 # set Xms to half of Xmx as a starting point
 # you want to leave RAM available outside of JVM for the OS to cache the solr indexes into
-JAVA_OPTIONS="-Xms768m -Xmx1024m -Xss256k $JAVA_OPTIONS"
+JAVA_OPTIONS="-Xms768m -Xmx1024m -Xss1024k $JAVA_OPTIONS"
 JAVA_OPTIONS="-XX:PermSize=64m -XX:MaxPermSize=128m $JAVA_OPTIONS"
 JAVA_OPTIONS="-XX:+UseAdaptiveSizePolicy -XX:MaxGCPauseMillis=1000 -XX:GCTimeRatio=19 $JAVA_OPTIONS"
 
