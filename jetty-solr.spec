@@ -181,6 +181,9 @@ fi
 
 %changelog
 
+* Tue May 20 2014 Boogie Shafer <boogieshafer@yahoo.com>
+- 4.8.1-1log4j
+
 * Sat Apr 13 2014 Boogie Shafer <boogieshafer@yahoo.com>
 - 4.7.1-1log4j
 - remove the dist slf4j and log4j and upgrade to current releases
