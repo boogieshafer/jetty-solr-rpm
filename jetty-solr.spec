@@ -168,6 +168,10 @@ fi
 
 %changelog
 
+* Tue May 20 2014 Boogie Shafer <boogieshafer@yahoo.com>
+- 4.8.1-1
+- update for 4.8.1
+
 * Wed Apr 02 2014 Boogie Shafer <boogieshafer@yahoo.com>
 - 4.7.1-1
 - update for solr 4.7.x
