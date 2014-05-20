@@ -182,6 +182,9 @@ fi
 
 %changelog
 
+* Tue May 20 2014 Boogie Shafer <boogieshafer@yahoo.com>
+- 4.8.1-1logback
+
 * Sat Apr 13 2014 Boogie Shafer <boogieshafer@yahoo.com>
 - 4.7.1-1logback
 - replace slf4j and log4j with current releases of slf4j and logback
