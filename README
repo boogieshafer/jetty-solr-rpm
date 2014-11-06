@@ -1,6 +1,6 @@
 RPM build for Solr using builtin Jetty
 
-solr version 4.8.1
+solr version 4.10.2
 jetty version 8.1.10.v20130312 (to match what is bundled with solr)
 slf4j 1.7.7 (replacing 1.7.6 that ships with solr)
 log4j 1.2.17 (replacing 1.2.16 that ships with solr)
