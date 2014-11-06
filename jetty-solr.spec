@@ -5,6 +5,8 @@
 %define _core02_name core02
 %define _core02_enabled false
 %define _notify_email youremail@yourdomain.com
+%define _solr_gid 8983
+%define _solr_uid 8983
 # Prevent brp-java-repack-jars from being run.
 %define __jar_repack %{nil}
 
@@ -84,6 +86,7 @@ cp -pr $RPM_BUILD_DIR/solr-%{version}/docs "%{buildroot}%{_prefix}"
 cp -pr $RPM_BUILD_DIR/solr-%{version}/licenses "%{buildroot}%{_prefix}"
 %__install -d "%{buildroot}%{_prefix}/jetty-solr"
 cp -pr $RPM_BUILD_DIR/solr-%{version}/example/* "%{buildroot}%{_prefix}/jetty-solr"
+mkdir -p "%{buildroot}%{_prefix}/jetty-solr/.java/.systemPrefs"
 cp -p $RPM_BUILD_DIR/apache-log4j-extras-%{l4xver}/apache-log4j-extras-%{l4xver}.jar "%{buildroot}%{_prefix}/jetty-solr/lib/ext"
 %if "%{_collection_name}" == "collection1"
 # no need to rename
@@ -138,6 +141,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_prefix}/licenses
 %doc %{_prefix}/CHANGES.txt
 %doc %{_prefix}/LICENSE.txt
+%doc %{_prefix}/LUCENE_CHANGES.txt
 %doc %{_prefix}/NOTICE.txt
 %doc %{_prefix}/README.txt
 %doc %{_prefix}/SYSTEM_REQUIREMENTS.txt
@@ -145,9 +149,10 @@ rm -rf $RPM_BUILD_ROOT
 %config %attr(0644,root,root) /etc/default/jetty-solr
 
 %pre
-getent group solr >/dev/null || groupadd -r solr
+mkdir -p %{_prefix}
+getent group solr >/dev/null || groupadd -g %{_solr_gid} solr
 getent passwd solr >/dev/null || \
-    useradd -r -g solr -d %{_prefix}/jetty-solr -s /bin/bash \
+    useradd -g %{_solr_gid} -u %{_solr_uid} -d %{_prefix}/jetty-solr -s /bin/bash \
     -c "Solr User" solr
 exit 0
 
@@ -167,6 +172,10 @@ if [ "$1" -ge "1" ] ; then
 fi
 
 %changelog
+
+* Thu Nov 06 2014 Boogie Shafer <boogieshafer@yahoo.com>
+- 4.10.2-1
+- update for 4.10.2
 
 * Tue May 20 2014 Boogie Shafer <boogieshafer@yahoo.com>
 - 4.8.1-1

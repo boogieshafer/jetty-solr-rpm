@@ -40,7 +40,7 @@ JAVA_OPTIONS="-Xloggc:$JETTY_LOGS/gc.log -verbose:gc -XX:+PrintGCDateStamps -XX:
 JAVA_OPTIONS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp/jetty-solr-dump.hprof -XX:OnError=$JETTY_HOME/etc/java_error.sh -XX:OnOutOfMemoryError=$JETTY_HOME/etc/java_oom.sh -XX:ErrorFile=/tmp/java_error%p.log $JAVA_OPTIONS"
 
 # configure location for java preferences to be stored
-JAVA_OPTIONS="-Djava.util.prefs.systemRoot=$JETTY_HOME/.java -Djava.util.prefs.userRoot=$JETTY_HOME/.java $JAVA_OPTIONS"
+JAVA_OPTIONS="-Djava.util.prefs.systemRoot=$JETTY_HOME/.java -Djava.util.prefs.userRoot=$JETTY_HOME/.java/.userPrefs $JAVA_OPTIONS"
 
 # other solr GC tuning suggestions
 # ref: https://wiki.apache.org/solr/ShawnHeisey#GC_Tuning
