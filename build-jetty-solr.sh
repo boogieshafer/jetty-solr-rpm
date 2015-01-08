@@ -1,7 +1,7 @@
 #!/bin/sh
-solrversion="4.10.2"
+solrversion="4.10.3"
 jettyversion="8.1.10.v20130312"
-slf4jversion="1.7.7"
+slf4jversion="1.7.10"
 logbackversion="1.1.2"
 
 echo "Cleaning up....."
@@ -17,9 +17,7 @@ fi
 
 if [ ! -f SOURCES/jetty-distribution-$jettyversion.tar.gz ];
 then
-#    wget "http://download.eclipse.org/jetty/$jettyversion/dist/jetty-distribution-$jettyversion.tar.gz" -O SOURCES/jetty-distribution-$jettyversion.tar.gz
     wget "http://archive.eclipse.org/jetty/$jettyversion/dist/jetty-distribution-$jettyversion.tar.gz" -O SOURCES/jetty-distribution-$jettyversion.tar.gz
-#    wget "http://download.eclipse.org/jetty/$jettyversion/dist/jetty-distribution-$jettyversion.tar.gz.md5" -O SOURCES/jetty-distribution-$jettyversion.tar.gz.md5
     wget "http://archive.eclipse.org/jetty/$jettyversion/dist/jetty-distribution-$jettyversion.tar.gz.md5" -O SOURCES/jetty-distribution-$jettyversion.tar.gz.md5
 fi
 
