@@ -18,7 +18,7 @@ License:		GPL
 URL:			http://lucene.apache.org/solr/
 Source:			http://www.us.apache.org/dist/lucene/solr/%{version}/solr-%{version}.tgz
 Source1:                http://download.eclipse.org/jetty/%{jver}/dist/jetty-distribution-%{jver}.tar.gz
-Source2:		http://archive.apache.org/dist/logging/log4j/companions/extras/%{l4xver}/apache-log4j-extras-%{l4xver}.tar.gz
+Source2:		http://archive.apache.org/dist/logging/log4j/extras/%{l4xver}/apache-log4j-extras-%{l4xver}-bin.tar.gz
 Source3:		etc.default.jetty-solr
 Source4:		jmx.passwd
 Source5:		jmx.access
@@ -172,6 +172,11 @@ if [ "$1" -ge "1" ] ; then
 fi
 
 %changelog
+
+* Thu Jan 08 2015 Boogie Shafer <boogieshafer@yahoo.com>
+- 4.10.3-1
+- update for 4.10.3
+- upgrade log4jextras to 1.2.17 to match bundled log4j
 
 * Thu Nov 06 2014 Boogie Shafer <boogieshafer@yahoo.com>
 - 4.10.2-1
