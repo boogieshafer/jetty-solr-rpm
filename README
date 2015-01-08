@@ -1,9 +1,9 @@
 RPM build for Solr using builtin Jetty
 
-solr version 4.10.2
+solr version 4.10.3
 jetty version 8.1.10.v20130312 (to match what is bundled with solr)
-slf4j 1.7.7 (replacing 1.7.6 that ships with solr)
-log4j 1.2.17 (replacing 1.2.16 that ships with solr)
+slf4j 1.7.10 (replacing 1.7.6 that ships with solr)
+log4j 1.2.17 (same version that ships with solr)
 log4j extras version 1.2.17 (to provide better log rotation)
 
 
@@ -39,8 +39,7 @@ Logging is now handled by log4j framework
   -logging for jetty, solr, and the local zookeeper services is using similar configuration settings (rotation, formatting, etc)
   -RFC3339 datetime format + local TZ label for service log events
   -combined format for jetty HTTP request logs
-  -slf4j is upgraded to 1.7.7
-  -log4j is upgraded to 1.2.17
+  -slf4j is upgraded to 1.7.10
   -log4j extras library is installed to handle log rotation with compression
   -the SOLR admin UI seems to require SOLR related events sent to root logger
   -GC logging is enabled by default, not handled by log4j, it is rotated by JVM
