@@ -188,7 +188,7 @@ fi
 
 * Thu Mar 26 2015 Boogie Shafer <boogieshafer@yahoo.com>
 - 4.10.4-1log4j
-- update for 4.10.3
+- update for 4.10.4
 - update slf4j to 1.7.11 release
 
 * Thu Jan 08 2015 Boogie Shafer <boogieshafer@yahoo.com>
