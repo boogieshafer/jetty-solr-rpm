@@ -187,6 +187,12 @@ fi
 
 %changelog
 
+* Thu Mar 26 2015 Boogie Shafer <boogieshafer@yahoo.com>
+- 4.10.4-1logback
+- update for 4.10.4
+- upgrade slf4j to 1.7.11
+- upgrade logback to 1.1.3
+
 * Thu Jan 08 2015 Boogie Shafer <boogieshafer@yahoo.com>
 - 4.10.3-1logback
 - update for 4.10.3

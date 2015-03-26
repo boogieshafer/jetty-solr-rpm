@@ -1,8 +1,8 @@
 #!/bin/sh
-solrversion="4.10.3"
+solrversion="4.10.4"
 jettyversion="8.1.10.v20130312"
-slf4jversion="1.7.10"
-logbackversion="1.1.2"
+slf4jversion="1.7.11"
+logbackversion="1.1.3"
 
 echo "Cleaning up....."
 rm -rf BUILD BUILDROOT tmp || true
