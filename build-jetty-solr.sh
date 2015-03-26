@@ -1,7 +1,7 @@
 #!/bin/sh
-solrversion="4.10.3"
+solrversion="4.10.4"
 jettyversion="8.1.10.v20130312"
-slf4jversion="1.7.10"
+slf4jversion="1.7.11"
 log4jversion="1.2.17"
 log4jextrasversion="1.2.17"
 
