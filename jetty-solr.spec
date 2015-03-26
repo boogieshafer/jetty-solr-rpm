@@ -173,6 +173,10 @@ fi
 
 %changelog
 
+* Thu Mar 26 2015 Boogie Shafer <boogieshafer@yahoo.com>
+- 4.10.4-1
+- update for 4.10.4
+
 * Thu Jan 08 2015 Boogie Shafer <boogieshafer@yahoo.com>
 - 4.10.3-1
 - update for 4.10.3
