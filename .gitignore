@@ -4,7 +4,7 @@ RPMS
 SPECS
 SRPMS
 tmp
-SOURCES/solr-4.*.tgz*
+SOURCES/solr-*.tgz*
 SOURCES/jetty-distribution-*.tar.gz*
 SOURCES/logback-*.tar.gz*
 SOURCES/log4j-*.tar.gz*

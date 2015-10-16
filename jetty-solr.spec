@@ -1,7 +1,8 @@
 %define _prefix /opt/solr
 %define _logprefix /var/log/solr
 %define _javaprefix /usr/lib/jvm
-%define _collection_name core01
+%define _core01_name core01
+%define _core01_enabled true
 %define _core02_name core02
 %define _core02_enabled false
 %define _notify_email youremail@yourdomain.com
@@ -45,33 +46,37 @@ https://github.com/boogieshafer/jetty-solr-rpm
 
 %prep
 %setup -q -n solr-%{version}
-rm -r example/example-DIH
-rm -r example/exampledocs
-rm -r example/example-schemaless
-rm -r example/multicore
-rm example/resources/log4j.properties
-rm example/scripts/cloud-scripts/zkcli.bat
-rm dist/solr-%{version}.war
-mkdir -p example/solr/%{_core02_name}
-cp -R example/solr/collection1/conf example/solr/%{_core02_name}/conf
-mv example/solr/%{_core02_name}/conf/schema.xml example/solr/%{_core02_name}/conf/schema-%{_core02_name}.xml
-mv example/solr/%{_core02_name}/conf/solrconfig.xml example/solr/%{_core02_name}/conf/solrconfig-%{_core02_name}.xml
-echo "name="%{_core02_name} > example/solr/%{_core02_name}/core.properties.unloaded
-echo "schema=schema-"%{_core02_name}".xml" >> example/solr/%{_core02_name}/core.properties.unloaded
-echo "config=solrconfig-"%{_core02_name}".xml" >> example/solr/%{_core02_name}/core.properties.unloaded
-echo "loadOnStartup="%{_core02_enabled} >> example/solr/%{_core02_name}/core.properties.unloaded
-%if "%{_core02_enabled}" == "true"
-mv example/solr/%{_core02_name}/core.properties.unloaded example/solr/%{_core02_name}/core.properties
+
+#rm -r example/example-DIH
+#rm -r example/exampledocs
+#rm -r example/example-schemaless
+#rm -r example/multicore
+#rm example/resources/log4j.properties
+#rm example/scripts/cloud-scripts/zkcli.bat
+#rm dist/solr-%{version}.war
+
+mkdir -p server/solr/%{_core01_name}
+cp -R server/solr/configsets/basic_configs/conf server/solr/%{_core01_name}
+mv server/solr/%{_core01_name}/conf/schema.xml server/solr/%{_core01_name}/conf/schema-%{_core01_name}.xml
+mv server/solr/%{_core01_name}/conf/solrconfig.xml server/solr/%{_core01_name}/conf/solrconfig-%{_core01_name}.xml
+echo "name="%{_core01_name} > server/solr/%{_core01_name}/core.properties.unloaded
+echo "schema=schema-"%{_core01_name}".xml" >> server/solr/%{_core01_name}/core.properties.unloaded
+echo "config=solrconfig-"%{_core01_name}".xml" >> server/solr/%{_core01_name}/core.properties.unloaded
+echo "loadOnStartup="%{_core01_enabled} >> server/solr/%{_core01_name}/core.properties.unloaded
+
+%if "%{_core01_enabled}" == "true"
+mv server/solr/%{_core01_name}/core.properties.unloaded server/solr/%{_core01_name}/core.properties
 %else
 # no need to rename
 %endif
-%patch0 -p0
+
+#%patch0 -p0
 
 %setup -q -D -T -b 1 -n jetty-distribution-%{jver}
-%patch1 -p0
-%patch2 -p0
-%patch3 -p0
-%patch4 -p0
+#%patch1 -p0
+#%patch2 -p0
+#%patch3 -p0
+#%patch4 -p0
 
 %setup -q -D -T -b 2 -n apache-log4j-extras-%{l4xver}
 %build
@@ -80,20 +85,17 @@ mv example/solr/%{_core02_name}/core.properties.unloaded example/solr/%{_core02_
 rm -rf $RPM_BUILD_ROOT
 %__install -d "%{buildroot}%{_prefix}"
 cp -p $RPM_BUILD_DIR/solr-%{version}/*.txt "%{buildroot}%{_prefix}"
+cp -pr $RPM_BUILD_DIR/solr-%{version}/bin "%{buildroot}%{_prefix}"
 cp -pr $RPM_BUILD_DIR/solr-%{version}/contrib "%{buildroot}%{_prefix}"
 cp -pr $RPM_BUILD_DIR/solr-%{version}/dist "%{buildroot}%{_prefix}"
 cp -pr $RPM_BUILD_DIR/solr-%{version}/docs "%{buildroot}%{_prefix}"
 cp -pr $RPM_BUILD_DIR/solr-%{version}/licenses "%{buildroot}%{_prefix}"
 %__install -d "%{buildroot}%{_prefix}/jetty-solr"
-cp -pr $RPM_BUILD_DIR/solr-%{version}/example/* "%{buildroot}%{_prefix}/jetty-solr"
+cp -pr $RPM_BUILD_DIR/solr-%{version}/server/* "%{buildroot}%{_prefix}/jetty-solr"
 mkdir -p "%{buildroot}%{_prefix}/jetty-solr/.java/.systemPrefs"
 cp -p $RPM_BUILD_DIR/apache-log4j-extras-%{l4xver}/apache-log4j-extras-%{l4xver}.jar "%{buildroot}%{_prefix}/jetty-solr/lib/ext"
-%if "%{_collection_name}" == "collection1"
-# no need to rename
-%else
-mv "%{buildroot}%{_prefix}/jetty-solr/solr/collection1" "%{buildroot}%{_prefix}/jetty-solr/solr/%{_collection_name}"
-%endif
-%__install -d "%{buildroot}%{_prefix}"/jetty-solr/solr/"%{_collection_name}"/data
+
+%__install -d "%{buildroot}%{_prefix}"/jetty-solr/solr/"%{_core01_name}"/data
 %__install -d "%{buildroot}%{_prefix}"/jetty-solr/solr/lib
 %__install -d "%{buildroot}"/etc/default
 %__install -d "%{buildroot}"/etc/init.d
@@ -115,14 +117,9 @@ sed -i "s|notify@domain.com|%{_notify_email}|g" "%{buildroot}%{_prefix}/jetty-so
 sed -i "s|notify@domain.com|%{_notify_email}|g" "%{buildroot}%{_prefix}/jetty-solr/etc/java_oom.sh"
 sed -i "s|./logs|%{_logprefix}|g" "%{buildroot}%{_prefix}/jetty-solr/resources/log4j.xml"
 
-%if "%{_collection_name}" == "collection1"
-# no need to rename
-%else
-sed -i "s|collection1|%{_collection_name}|g" "%{buildroot}%{_prefix}/jetty-solr/solr/%{_collection_name}/core.properties"
-%endif
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+#rm -rf $RPM_BUILD_ROOT
 
 
 
@@ -134,9 +131,11 @@ rm -rf $RPM_BUILD_ROOT
 %else
 %attr(0755,solr,solr) %dir %{_logprefix}
 %endif
+%{_prefix}/bin
 %{_prefix}/contrib
 %{_prefix}/dist
 %doc %{_prefix}/docs
+%{_prefix}/example
 %{_prefix}/jetty-solr
 %doc %{_prefix}/licenses
 %doc %{_prefix}/CHANGES.txt
@@ -144,7 +143,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_prefix}/LUCENE_CHANGES.txt
 %doc %{_prefix}/NOTICE.txt
 %doc %{_prefix}/README.txt
-%doc %{_prefix}/SYSTEM_REQUIREMENTS.txt
 %attr(0755,root,root) /etc/init.d/jetty-solr
 %config %attr(0644,root,root) /etc/default/jetty-solr
 
@@ -172,6 +170,10 @@ if [ "$1" -ge "1" ] ; then
 fi
 
 %changelog
+
+* Thu Oct 15 2015 Boogie Shafer <boogieshafer@yahoo.com>
+- 5.3.1-1
+- initial 5.x update
 
 * Thu Mar 26 2015 Boogie Shafer <boogieshafer@yahoo.com>
 - 4.10.4-1

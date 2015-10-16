@@ -1,6 +1,6 @@
 #!/bin/sh
-solrversion="4.10.4"
-jettyversion="8.1.10.v20130312"
+solrversion="5.3.1"
+jettyversion="9.2.11.v20150529"
 log4jextrasversion="1.2.17"
 
 echo "Cleaning up....."
@@ -27,6 +27,6 @@ then
 fi
 
 echo "Assembling RPM....."
-rpmbuild -ba --target=noarch --define="_topdir $PWD" --define="_tmppath $PWD/tmp" --define="sver $solrversion" --define="jver $jettyversion" --define="l4xver $log4jextrasversion" jetty-solr.spec
+rpmbuild -ba --target=x86_64 --define="_topdir $PWD" --define="_tmppath $PWD/tmp" --define="sver $solrversion" --define="jver $jettyversion" --define="l4xver $log4jextrasversion" jetty-solr.spec
 
 echo "DONE"
